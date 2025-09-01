@@ -18,47 +18,45 @@ export const ScoreBoard = () => {
     const [setPointA, setSetPointA] = useState(0)
     const [setPointB, setSetPointB] = useState(0)
     const [running, setRunning] = useState(false)
-    const [ready, setReady] = useState(false)
+    const [showScoreboard, setShowScoreboard] = useState(false)
 
-    // 🚫 Matikan pull-to-refresh di mobile
+    const [isMobile, setIsMobile] = useState(false)
+
+    // deteksi mobile
     useEffect(() => {
-        const preventPullToRefresh = (e) => {
-            if (e.touches.length !== 1) return
-            if (window.scrollY === 0 && e.touches[0].clientY > 50) {
-                e.preventDefault()
+        const mobileCheck = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+        setIsMobile(mobileCheck)
+    }, [])
+
+    // jika keluar fullscreen → balik ke info screen (mobile)
+    useEffect(() => {
+        const handleFsChange = () => {
+            if (!document.fullscreenElement) {
+                if (isMobile) {
+                    // Mobile → balik ke info screen
+                    setShowScoreboard(false)
+                    setRunning(false)
+                } else {
+                    // Desktop → munculin alert ulang
+                    MySwal.fire({
+                        title: '🖥️ Mode Landscape Fullscreen',
+                        text: 'Untuk melanjutkan, aplikasi ini memerlukan mode fullscreen.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then(async () => {
+                        await enterFullscreen()
+                        setShowScoreboard(true)
+                    })
+                }
             }
         }
-        document.addEventListener("touchmove", preventPullToRefresh, { passive: false })
-        return () => document.removeEventListener("touchmove", preventPullToRefresh)
-    }, [])
+        document.addEventListener("fullscreenchange", handleFsChange)
+        return () => document.removeEventListener("fullscreenchange", handleFsChange)
+    }, [isMobile])
 
-    // 🚫 Disable scroll total
-    useEffect(() => {
-        document.documentElement.style.height = "100%"
-        document.body.style.height = "100%"
-        document.body.style.margin = "0"
-        document.body.style.overflow = "hidden"
-    }, [])
-
-    // 🚨 Popup wajib saat pertama kali buka (mobile & desktop)
-    useEffect(() => {
-        if (!ready) {
-            MySwal.fire({
-                title: '📺 Mode Landscape Fullscreen',
-                text: 'Aplikasi ini akan berjalan dalam mode landscape fullscreen. Klik OK untuk melanjutkan.',
-                icon: 'info',
-                confirmButtonText: 'OK',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                backdrop: true
-            }).then(async () => {
-                await enterFullscreen()
-                setReady(true)
-            })
-        }
-    }, [ready])
-
-    // ⌨️ Keyboard shortcuts (PC only, hanya kalau running)
+    // keyboard desktop
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (!running) return
@@ -79,20 +77,9 @@ export const ScoreBoard = () => {
                     break
             }
         }
-
         window.addEventListener("keydown", handleKeyDown)
         return () => window.removeEventListener("keydown", handleKeyDown)
     }, [running])
-
-    const handleSwapTeams = () => {
-        if (running) return
-        setTeamAName(teamBName)
-        setTeamBName(teamAName)
-        setTeamAScore(teamBScore)
-        setTeamBScore(teamAScore)
-        setSetPointA(setPointB)
-        setSetPointB(setPointA)
-    }
 
     const enterFullscreen = async () => {
         const elem = document.documentElement
@@ -106,29 +93,71 @@ export const ScoreBoard = () => {
                 try {
                     await screen.orientation.lock("landscape")
                 } catch (err) {
-                    console.warn("Orientation lock not supported:", err)
+                    console.warn("Orientation lock gagal:", err)
                 }
             }
         } catch (err) {
-            console.warn("Fullscreen API gagal, fallback pakai CSS:", err)
-            document.body.style.overflow = "hidden"
-            document.body.style.height = "100vh"
+            console.warn("Fullscreen gagal:", err)
         }
     }
 
-    const handleToggleMatch = async () => {
-        const newRunning = !running
-        setRunning(newRunning)
-
-        if (newRunning) {
-            await enterFullscreen()
-        }
-        // ❌ Jangan pernah exit fullscreen saat pause
+    const handleStartMobile = async () => {
+        await enterFullscreen()
+        setShowScoreboard(true)
     }
 
-    // 🚧 Jangan render apapun sebelum user klik OK
-    if (!ready) {
-        return <div className="w-full h-screen bg-black" />
+    const handleSwapTeams = () => {
+        if (running) return
+        setTeamAName(teamBName)
+        setTeamBName(teamAName)
+        setTeamAScore(teamBScore)
+        setTeamBScore(teamAScore)
+        setSetPointA(setPointB)
+        setSetPointB(setPointA)
+    }
+
+    const handleToggleMatch = () => {
+        setRunning(!running)
+    }
+
+    // 🚨 Desktop: tampilkan alert saat pertama kali buka
+    useEffect(() => {
+        if (!isMobile && !showScoreboard) {
+            MySwal.fire({
+                title: '🖥️ Mode Landscape Fullscreen',
+                text: 'Aplikasi ini akan berjalan dalam mode landscape fullscreen. Klik OK untuk melanjutkan.',
+                icon: 'info',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(async () => {
+                await enterFullscreen()
+                setShowScoreboard(true)
+            })
+        }
+    }, [isMobile, showScoreboard])
+
+    // 📱 Mobile info screen
+    if (isMobile && !showScoreboard) {
+        return (
+            <div className="flex flex-col items-center justify-center w-screen h-screen bg-base-200 text-center p-5">
+                <h1 className="text-2xl font-bold mb-5">📱 Mode Landscape Diperlukan</h1>
+                <p className="mb-6">
+                    Aplikasi ini hanya bisa dijalankan dalam posisi layar <b>landscape fullscreen</b>.
+                </p>
+                <button
+                    className="btn btn-primary btn-lg rounded-lg"
+                    onClick={handleStartMobile}
+                >
+                    Masuk ke Mode Landscape
+                </button>
+            </div>
+        )
+    }
+
+    // 🖥️ Desktop (setelah OK) atau Mobile setelah fullscreen
+    if (!showScoreboard) {
+        return <div className="w-screen h-screen bg-black" /> // placeholder sebelum alert ditutup
     }
 
     return (
