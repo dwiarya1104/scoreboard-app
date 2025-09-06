@@ -1,11 +1,13 @@
 
 import './App.css'
+import { FormGames } from './pages/FormGames'
 import { ScoreBoard } from './pages/ScoreBoard'
 
 function App() {
   return (
     <>
-      <ScoreBoard />
+      <FormGames />
+      {/* <ScoreBoard /> */}
     </>
   )
 }

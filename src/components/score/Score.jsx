@@ -24,13 +24,13 @@ export const Score = ({ value, onChange, running }) => {
 
     return (
         <div
-            className={`card w-full border border-black bg-base-100 card-md shadow-sm rounded-sm md:h-80 h-40 select-none ${running ? "cursor-pointer" : "cursor-not-allowed opacity-70"
+            className={`card w-full bg-white shadow-sm rounded-2xl md:h-80 h-40 select-none ${running ? "cursor-pointer" : "cursor-not-allowed shadow-[#C8ACD6] shadow-2xl"
                 }`}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
             <div className="card-body flex justify-center text-center items-center">
-                <span className="countdown font-mono md:text-9xl text-5xl">
+                <span className="countdown font-mono md:text-9xl text-5xl ">
                     <span style={{ "--value": value }}>{value}</span>
                 </span>
             </div>

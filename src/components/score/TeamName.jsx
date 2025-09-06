@@ -2,16 +2,15 @@ import React from 'react'
 
 export const TeamName = ({ value, onChange, disabled }) => {
     return (
-        <label className="floating-label w-full">
+        <>
             <input
                 type="text"
                 value={value}
                 onChange={e => onChange(e.target.value)}
                 placeholder="Nama Tim"
-                className="input input-lg rounded-md w-full"
-                disabled={disabled}
+                className="input w-full rounded-xl text-center font-bold text-xl md:text-2xl border shadow-2xl"
+                readOnly={disabled}
             />
-            <span>{value}</span>
-        </label>
+        </>
     )
 }
