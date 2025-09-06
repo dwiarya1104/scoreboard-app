@@ -29,8 +29,8 @@ export const FormGames = () => {
         // <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 p-4">
         <div className="flex items-center justify-center min-h-screen bg-[#17153B] p-4">
             <div className="card w-full max-w-xl bg-white shadow-2xl rounded-2xl p-8">
-                <h2 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-[#433D8B] to-[#C8ACD6] font-extrabold text-center mb-6">
-                    ⚡ Setup Pertandingan
+                <h2 className="md:text-3xl text-xl text-transparent bg-clip-text bg-gradient-to-r from-[#433D8B] to-[#C8ACD6] font-extrabold text-center mb-6">
+                   ⚡ Setup Pertandingan
                 </h2>
                 <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                     {/* Nama Player */}

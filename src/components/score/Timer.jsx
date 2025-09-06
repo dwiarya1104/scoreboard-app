@@ -22,7 +22,7 @@ export const Timer = ({ running }) => {
     const s = seconds % 60
 
     return (
-        <span className="countdown font-mono md:text-2xl text-xl mt-2 border rounded-md p-3">
+        <span className="countdown font-mono md:text-2xl text-xl mt-2 border rounded-md p-3 text-white">
             <span style={{ "--value": h }}>{h}</span>:
             <span style={{ "--value": m }}>{m}</span>:
             <span style={{ "--value": s }}>{s}</span>

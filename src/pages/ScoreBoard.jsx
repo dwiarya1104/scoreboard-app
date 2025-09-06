@@ -149,11 +149,11 @@ export const ScoreBoard = ({ config, onExit }) => {
     if (pausedByExit) {
         return (
             <div className="flex flex-col items-center justify-center w-full h-screen bg-gray-900 text-white text-center p-6">
-                <h1 className="text-4xl font-bold mb-6">⏸️ Pertandingan Dijeda</h1>
-                <p className="text-lg mb-8">Kamu keluar dari fullscreen. Pilih aksi:</p>
+                <h1 className="text-2xl font-bold mb-6">⏸️ Pertandingan Dijeda</h1>
+                {/* <p className="text-lg mb-8">Kamu keluar dari fullscreen. Pilih aksi:</p> */}
                 <div className="flex flex-col gap-4 w-full max-w-sm">
                     <button
-                        className="btn btn-primary btn-lg px-8 py-4 rounded-xl shadow-lg"
+                        className="btn btn-primary btn-md px-8 py-4 rounded-xl shadow-lg"
                         onClick={() => {
                             requestFullscreen()
                             setPausedByExit(false)
@@ -162,7 +162,7 @@ export const ScoreBoard = ({ config, onExit }) => {
                         Lanjutkan
                     </button>
                     <button
-                        className="btn btn-error btn-lg px-8 py-4 rounded-xl shadow-lg"
+                        className="btn btn-error btn-md px-8 py-4 rounded-xl shadow-lg"
                         onClick={onExit}
                     >
                         Kembali ke Form
@@ -187,9 +187,9 @@ export const ScoreBoard = ({ config, onExit }) => {
                         <SetPoint value={setPointA} />
                         <SetPoint value={setPointB} />
                     </div>
-                    <p className='md:text-7xl text-2xl font-extrabold text-white'>VS</p>
-                    <button className='btn btn-md rounded-md' onClick={handleSwapTeams}>
-                        <HiSwitchHorizontal /> Tuker Tempat
+                    <p className='md:text-7xl text-6xl font-extrabold text-white'>VS</p>
+                    <button className='btn btn-md rounded-md text-xs' onClick={handleSwapTeams}>
+                        <HiSwitchHorizontal /> Tukeran
                     </button>
                 </div>
 
@@ -210,7 +210,7 @@ export const ScoreBoard = ({ config, onExit }) => {
                     </button>
                 )}
 
-                {!config.usePoint && !setFinished && (
+                {!config.usePoint && !setFinished && teamAScore != 0 && teamBScore != 0 && (
                     <button className='btn bg-[#C8ACD6] w-1/2 rounded-md border-none' onClick={handleManualEndSet}>
                         <FaStop className='mr-2' /> Udahan Dah
                     </button>
